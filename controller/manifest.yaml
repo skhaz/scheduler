@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .ID }}
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: {{ .Name }}
+  namespace: {{ .ID }}
+spec:
+  schedule: "{{ .Schedule }}"
+  timezone: "{{ .Timezone }}"
+  concurrencyPolicy: "Replace"
+  workflowSpec:
+    entrypoint: curl
+    templates:
+      - name: curl
+        script:
+          image: skhaz/curl:1.0.0
+          command:
+            - bash
+          source: |
+            set -e
+
+            declare -a ARGS=(
+              --silent
+              --location
+              --output /dev/null
+              --write-out "%{http_code}"
+              --request {{ .Method }}
+              --max-time {{ .Timeout }}
+              --retry {{ .Retry }}
+              "{{ .Url }}"
+            )
+
+            test "$(curl "${ARGS[@]}")" -eq {{ .Success }}
