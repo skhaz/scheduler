@@ -44,10 +44,10 @@ func TestWorkspaceJsonMarshal(t *testing.T) {
 	}
 
 	b1, _ := json.Marshal(e1)
-	b2, err := json.Marshal(e2)
-	if assert.NoError(t, err) {
-		assert.Equal(t, string(b1), string(b2))
-	}
+	b2, _ := json.Marshal(e2)
+	b1, _ = JSONRemarshal(b1)
+	b2, _ = JSONRemarshal(b2)
+	assert.Equal(t, string(b1), string(b2))
 }
 
 func TestSingleWorkspaceHAL(t *testing.T) {
@@ -56,7 +56,7 @@ func TestSingleWorkspaceHAL(t *testing.T) {
 	name := randstr.String(16)
 	url := "/" + randstr.String(16)
 
-	e := Trigger{
+	trigger := Trigger{
 		ID:        id,
 		Name:      name,
 		CreatedAt: now,
@@ -76,9 +76,14 @@ func TestSingleWorkspaceHAL(t *testing.T) {
 		CreatedAt time.Time `json:"created_at"`
 		ID        uuid.UUID `json:"id"`
 		Name      string    `json:"name"`
+		Method    string    `json:"method"`
+		Retry     int       `json:"retry"`
+		Schedule  string    `json:"schedule"`
+		Success   int       `json:"success"`
+		Timeout   int       `json:"timeout"`
+		Timezone  string    `json:"timezone"`
 		UpdatedAt time.Time `json:"updated_at"`
 		Url       string    `json:"url"`
-		Method    string    `json:"method"`
 	}
 
 	expected, _ := json.Marshal(HAL{Links: Links{
@@ -92,9 +97,12 @@ func TestSingleWorkspaceHAL(t *testing.T) {
 		UpdatedAt: now,
 	})
 
-	resource := e.ToHAL(url)
+	resource := trigger.ToHAL(url)
 	namedMap := resource.ToMap()
 	actual, _ := json.Marshal(namedMap.Content)
+
+	expected, _ = JSONRemarshal(expected)
+	actual, _ = JSONRemarshal(actual)
 	assert.Equal(t, string(expected), string(actual))
 }
 
