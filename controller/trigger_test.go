@@ -58,7 +58,7 @@ func TestGetTriggers(t *testing.T) {
 	r := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(r)
 	triggers := model.TriggerCollection{{Name: randstr.String(16)}}
-	ctx.Request, _ = http.NewRequest("GET", "/", nil)
+	ctx.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
 
 	ctx.Set("RepositoryRegistry", repository.NewRepositoryRegistry(nil, &TriggerRepository{triggers: triggers}))
 
@@ -100,7 +100,7 @@ func TestCreateTrigger(t *testing.T) {
 
 	b, err := json.Marshal(trigger)
 	assert.NoError(t, err)
-	ctx.Request, _ = http.NewRequest("POST", "/triggers", bytes.NewBuffer(b))
+	ctx.Request, _ = http.NewRequest(http.MethodPost, "/triggers", bytes.NewBuffer(b))
 
 	ctx.Set("RepositoryRegistry", repository.NewRepositoryRegistry(nil, &TriggerRepository{trigger: &trigger}))
 	ctx.Set("Workflow", &Workflow{})
@@ -116,7 +116,7 @@ func TestGetTrigger(t *testing.T) {
 	r := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(r)
 	trigger := model.Trigger{Name: randstr.String(16)}
-	ctx.Request, _ = http.NewRequest("GET", "/", nil)
+	ctx.Request, _ = http.NewRequest(http.MethodGet, "/", nil)
 	ctx.Params = []gin.Param{{Key: "uuid", Value: "f3edb291-a99d-4a43-8de0-1d6acd00c64d"}}
 
 	ctx.Set("RepositoryRegistry", repository.NewRepositoryRegistry(nil, &TriggerRepository{trigger: &trigger}))
@@ -136,7 +136,7 @@ func TestDeleteTrigger(t *testing.T) {
 	ctx, _ := gin.CreateTestContext(r)
 	id := uuid.New()
 	trigger := model.Trigger{ID: id}
-	ctx.Request, _ = http.NewRequest("DELETE", "/", nil)
+	ctx.Request, _ = http.NewRequest(http.MethodDelete, "/", nil)
 	ctx.Params = []gin.Param{{Key: "uuid", Value: id.String()}}
 
 	ctx.Set("RepositoryRegistry", repository.NewRepositoryRegistry(nil, &TriggerRepository{trigger: &trigger}))
