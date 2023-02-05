@@ -11,18 +11,11 @@ import (
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"k8s.io/client-go/dynamic"
-	dynamicfake "k8s.io/client-go/dynamic/fake"
 	"k8s.io/client-go/kubernetes"
-	fake "k8s.io/client-go/kubernetes/fake"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-var _ = dynamicfake.NewSimpleDynamicClient
-var _ = fake.NewSimpleClientset
-var ctx = context.Background()
-
 func main() {
-
 	viper.AutomaticEnv()
 
 	logger, _ := zap.NewDevelopment()
@@ -51,6 +44,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	var ctx = context.Background()
 
 	wf := workflow.NewWorkflow(ctx, api, clientset)
 
