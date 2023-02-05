@@ -80,7 +80,7 @@ func (collection TriggerCollection) ToHAL(selfHref string, queryString url.Value
 	var embedded []hal.Resource
 
 	for _, trigger := range collection {
-		selfLink, _ := hal.NewLinkObject(fmt.Sprintf("%s/%v", selfHref, i.ID))
+		selfLink, _ := hal.NewLinkObject(fmt.Sprintf("%s/%v", selfHref, trigger.ID))
 
 		selfRel, _ := hal.NewLinkRelation("self")
 		selfRel.SetLink(selfLink)
@@ -95,7 +95,7 @@ func (collection TriggerCollection) ToHAL(selfHref string, queryString url.Value
 	triggers, _ := hal.NewResourceRelation("triggers")
 	triggers.SetResources(embedded)
 	root.AddResource(triggers)
-	root.AddData(Result{len(c), c})
+	root.AddData(Result{len(collection), collection})
 
 	return
 }

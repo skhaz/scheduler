@@ -30,7 +30,7 @@ install: context
 lint: vet
 	golangci-lint run ./...
 
-test: lint
+test:
 	go test ./...
 
 update:

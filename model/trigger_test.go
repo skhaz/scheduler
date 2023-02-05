@@ -18,8 +18,15 @@ func TestWorkspaceJsonMarshal(t *testing.T) {
 	name := randstr.String(16)
 
 	e1 := struct {
-		ID        uuid.UUID `json:"id"`
-		Name      string    `json:"name"`
+		ID       uuid.UUID `json:"id"`
+		Name     string    `json:"name"`
+		Schedule string    `json:"schedule"`
+		Timezone string    `json:"timezone"`
+		Url      string    `json:"url"`
+		//Method    string    `json:"method"`
+		Success   int       `json:"success"`
+		Timeout   int       `json:"timeout"`
+		Retry     int       `json:"retry"`
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	}{
@@ -70,6 +77,8 @@ func TestSingleWorkspaceHAL(t *testing.T) {
 		ID        uuid.UUID `json:"id"`
 		Name      string    `json:"name"`
 		UpdatedAt time.Time `json:"updated_at"`
+		Url       string    `json:"url"`
+		Method    string    `json:"method"`
 	}
 
 	expected, _ := json.Marshal(HAL{Links: Links{
