@@ -54,12 +54,14 @@ func GetTriggers(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindQuery(&q); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	e, err := GetTriggerRepository(ctx).List(q.After, q.Limit)
 	if err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
@@ -71,17 +73,20 @@ func CreateTrigger(ctx *gin.Context) {
 
 	if err := ctx.BindJSON(&body); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	if err := validate.Struct(body); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	e, err := GetTriggerRepository(ctx).Create(&body)
 	if err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
@@ -90,11 +95,13 @@ func CreateTrigger(ctx *gin.Context) {
 	manifest, err := GetManifest(trigger)
 	if err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	if err := GetWorkflow(ctx).Apply(manifest, workflow.Deploy); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
@@ -107,17 +114,20 @@ func GetTrigger(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindUri(&p); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	if err := validate.Struct(p); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	e, err := GetTriggerRepository(ctx).Get(p.ID)
 	if err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
@@ -129,11 +139,13 @@ func DeleteTrigger(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindUri(&p); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	if err := validate.Struct(p); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
@@ -142,6 +154,7 @@ func DeleteTrigger(ctx *gin.Context) {
 	e, err := repository.Get(p.ID)
 	if err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
@@ -150,16 +163,19 @@ func DeleteTrigger(ctx *gin.Context) {
 	manifest, err := GetManifest(trigger)
 	if err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	if err := GetWorkflow(ctx).Apply(manifest, workflow.Displace); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 
 	if _, err := repository.Delete(p.ID); err != nil {
 		HandleError(ctx, err)
+
 		return
 	}
 

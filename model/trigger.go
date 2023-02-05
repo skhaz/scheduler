@@ -48,7 +48,7 @@ func (t *Trigger) ToHAL(selfHref string) (root hal.Resource) {
 	return
 }
 
-func (c TriggerCollection) ToHAL(selfHref string, queryString url.Values) (root hal.Resource) {
+func (collection TriggerCollection) ToHAL(selfHref string, queryString url.Values) (root hal.Resource) {
 	type NameOnly struct {
 		Name string `json:"name"`
 	}
@@ -64,7 +64,7 @@ func (c TriggerCollection) ToHAL(selfHref string, queryString url.Values) (root 
 	selfRel.SetLink(&hal.LinkObject{Href: selfHref})
 	root.AddLink(selfRel)
 
-	el, hasLast := Last(c)
+	el, hasLast := Last(collection)
 	if hasLast {
 		after, err := el.CreatedAt.MarshalText()
 		if NoError(err) {
@@ -79,7 +79,7 @@ func (c TriggerCollection) ToHAL(selfHref string, queryString url.Values) (root 
 
 	var embedded []hal.Resource
 
-	for _, i := range c {
+	for _, trigger := range collection {
 		selfLink, _ := hal.NewLinkObject(fmt.Sprintf("%s/%v", selfHref, i.ID))
 
 		selfRel, _ := hal.NewLinkRelation("self")
@@ -87,7 +87,7 @@ func (c TriggerCollection) ToHAL(selfHref string, queryString url.Values) (root 
 
 		resource := hal.NewResourceObject()
 		resource.AddLink(selfRel)
-		resource.AddData(NameOnly{i.Name})
+		resource.AddData(NameOnly{trigger.Name})
 
 		embedded = append(embedded, resource)
 	}
