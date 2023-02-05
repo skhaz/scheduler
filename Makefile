@@ -34,7 +34,7 @@ test: lint
 	go test ./...
 
 update:
-	go get -u
+	go get -u -t -d -v ./...
 	go mod tidy
 
 vet:

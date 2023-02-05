@@ -1,4 +1,4 @@
-FROM golang:1.19-bullseye
+FROM golang:1.20-bullseye
 WORKDIR /opt
 COPY go.mod .
 COPY go.sum .
@@ -7,6 +7,6 @@ COPY . .
 ENV CGO_ENABLED 0
 RUN go build -o app
 
-FROM gcr.io/distroless/base-debian11
+FROM gcr.io/distroless/static-debian11
 COPY --from=0 /opt/app /
 CMD ["/app"]
