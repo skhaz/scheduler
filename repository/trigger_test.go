@@ -116,7 +116,7 @@ func TestUpdateWorkspace(t *testing.T) {
 	conn, mock, repository := setup()
 	defer conn.Close()
 
-	m := model.Trigger{
+	trigger := model.Trigger{
 		ID:        uuid.New(),
 		Name:      randstr.String(16),
 		CreatedAt: time.Now(),
@@ -126,12 +126,12 @@ func TestUpdateWorkspace(t *testing.T) {
 
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(`UPDATE "triggers" SET`)).
-		WithArgs(m.Name, AnyTime{}, AnyTime{}, m.ID, m.ID).
+		WithArgs(trigger.Name, AnyTime{}, AnyTime{}, trigger.ID, trigger.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	var e bool
-	e, err = repository.Update(m.ID, &m)
+	e, err = repository.Update(trigger.ID, &trigger)
 	assert.NoError(t, err)
 	assert.True(t, e)
 
@@ -144,7 +144,7 @@ func TestUpdateWorkspaceError(t *testing.T) {
 	conn, mock, repository := setup()
 	defer conn.Close()
 
-	m := model.Trigger{
+	trigger := model.Trigger{
 		ID:        uuid.New(),
 		Name:      randstr.String(16),
 		CreatedAt: time.Now(),
@@ -154,12 +154,12 @@ func TestUpdateWorkspaceError(t *testing.T) {
 
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta(`UPDATE "triggers" SET`)).
-		WithArgs(m.Name, AnyTime{}, AnyTime{}, m.ID, m.ID).
+		WithArgs(trigger.Name, AnyTime{}, AnyTime{}, trigger.ID, trigger.ID).
 		WillReturnError(gorm.ErrRecordNotFound)
 	mock.ExpectRollback()
 
 	var e bool
-	e, err = repository.Update(m.ID, &m)
+	e, err = repository.Update(trigger.ID, &trigger)
 	assert.Error(t, err)
 	assert.False(t, e)
 
