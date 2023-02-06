@@ -17,13 +17,13 @@ func TestWorkspaceJsonMarshal(t *testing.T) {
 	id := uuid.New()
 	name := randstr.String(16)
 
-	e1 := struct {
-		ID       uuid.UUID `json:"id"`
-		Name     string    `json:"name"`
-		Schedule string    `json:"schedule"`
-		Timezone string    `json:"timezone"`
-		Url      string    `json:"url"`
-		//Method    string    `json:"method"`
+	trigger1 := struct {
+		ID        uuid.UUID `json:"id"`
+		Name      string    `json:"name"`
+		Schedule  string    `json:"schedule"`
+		Timezone  string    `json:"timezone"`
+		Url       string    `json:"url"`
+		Method    string    `json:"method"`
 		Success   int       `json:"success"`
 		Timeout   int       `json:"timeout"`
 		Retry     int       `json:"retry"`
@@ -36,18 +36,18 @@ func TestWorkspaceJsonMarshal(t *testing.T) {
 		UpdatedAt: now,
 	}
 
-	e2 := Trigger{
+	trigger2 := Trigger{
 		ID:        id,
 		Name:      name,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
 
-	b1, _ := json.Marshal(e1)
-	b2, _ := json.Marshal(e2)
-	b1, _ = JSONRemarshal(b1)
-	b2, _ = JSONRemarshal(b2)
-	assert.Equal(t, string(b1), string(b2))
+	json1, _ := json.Marshal(trigger1)
+	json2, _ := json.Marshal(trigger2)
+	json1, _ = JSONRemarshal(json1)
+	json2, _ = JSONRemarshal(json2)
+	assert.Equal(t, string(json1), string(json2))
 }
 
 func TestSingleWorkspaceHAL(t *testing.T) {
