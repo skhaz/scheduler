@@ -84,22 +84,26 @@ func TestCreateWorkspace(t *testing.T) {
 	conn, mock, repository := setup()
 	defer conn.Close()
 
-	m := model.Trigger{
+	trigger := model.Trigger{
 		ID:        uuid.New(),
 		Name:      randstr.String(16),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		DeletedAt: gorm.DeletedAt{},
+		Timezone:  "UTC",
+		Success:   200,
+		Timeout:   60,
+		Retry:     3,
 	}
 
 	mock.ExpectBegin()
 	mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "triggers"`)).
-		WithArgs(m.Name, m.CreatedAt, m.UpdatedAt, m.DeletedAt, m.ID).
-		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(m.ID))
+		WithArgs(trigger.Name, trigger.Schedule, trigger.Timezone, trigger.Url, trigger.Method, trigger.Success, trigger.Timeout, trigger.Retry, trigger.CreatedAt, trigger.UpdatedAt, trigger.DeletedAt, trigger.ID).
+		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(trigger.ID))
 	mock.ExpectCommit()
 
 	var e any
-	e, err = repository.Create(&m)
+	e, err = repository.Create(&trigger)
 	assert.NoError(t, err)
 	assert.NotNil(t, e)
 
