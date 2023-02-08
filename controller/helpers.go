@@ -16,7 +16,7 @@ func WriteHAL(ctx *gin.Context, statusCode int, resource hal.Resource) {
 	_, err := encoder.WriteTo(ctx.Writer, statusCode, resource)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 }
 
